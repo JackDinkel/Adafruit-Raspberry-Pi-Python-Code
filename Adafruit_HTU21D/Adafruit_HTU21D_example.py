@@ -14,7 +14,7 @@ for _ in range(100):
 	temp = htu.readTemperatureData()
 	rh = htu.readHumidityData()
 	
-	if temp > 0 and rh > 0:
+	if temp > -40 and rh > 0:
 		print "Temperature: %.2f C, Humidity: %.2f %%" % (temp, rh)
 	elif temp == -255:
 		print "Temperature data CRC failed"

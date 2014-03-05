@@ -23,22 +23,22 @@ class HTU21D:
 		self.i2c = Adafruit_I2C(self.address)
 		
 	def readUserRegister(self):
-		# Read a byte
-		value = self.i2c.readU8(self.READ_USER_REG)
-		
-		return value
+		"Read the user register byte"
+		return self.i2c.readU8(self.READ_USER_REG)
 	
 	def readTemperatureData(self):
+		"Read 3 temperature bytes from the sensor"
 		# value[0], value[1]: Raw temperature data
 		# value[2]: CRC
 		value = self.i2c.readList(self.TRIGGER_TEMP_MEASURE_HOLD, 3)
 		
+		# CRC Check
 		if not self.crc8check(value):
 			return -255
 			
 		rawTempData = ( value[0] << 8 ) + value[1]
 		
-		# Zero out the status bits but keep them in place
+		# Clear the status bits
 		rawTempData = rawTempData & 0xFFFC;
 		
 		# Calculate the actual temperature
@@ -47,16 +47,18 @@ class HTU21D:
 		return actualTemp
 
 	def readHumidityData(self):
+		"Read 3 humidity bytes from the sensor"
 		# value[0], value[1]: Raw relative humidity data
 		# value[2]: CRC
 		value = self.i2c.readList(self.TRIGGER_HUMD_MEASURE_HOLD, 3)
 		
+		# CRC Check
 		if not self.crc8check(value):
 			return -255
 
 		rawRHData = ( value[0] << 8 ) + value[1]
 		
-		# Zero out the status bits but keep them in place
+		# Clear the status bits
 		rawRHData = rawRHData & 0xFFFC;
 		
 		# Calculate the actual RH
@@ -65,6 +67,8 @@ class HTU21D:
 		return actualRH
 	
 	def crc8check(self, value):
+		"Calulate the CRC8 for the data received"
+		# Ported from Sparkfun Arduino HTU21D Library: https://github.com/sparkfun/HTU21D_Breakout
 		remainder = ( ( value[0] << 8 ) + value[1] ) << 8
 		remainder |= value[2]
 		
