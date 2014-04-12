@@ -5,6 +5,9 @@ from Adafruit_I2C import Adafruit_I2C
 
 # ===========================================================================
 # HTU21D Class
+# 
+# Code only test with a Sparkfun HTU21D Sensor module on a Beaglebone Black.
+# It has been reported that an I2C address issue was seen on a Pi.
 # ===========================================================================
 
 class HTU21D:
